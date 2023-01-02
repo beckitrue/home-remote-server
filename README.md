@@ -69,8 +69,8 @@ Clone this repo to host in your home directory
 
 #### cloudflared
 
-1. Retrieve cloudflared token from password manager and edit the `docker-compose.yaml` file
 1. Change the image if you want to use the official Cloudflare image `cloudflare/cloudflared:latest`
+1. Retrieve cloudflared token from password manager (or Cloudflare if this is your initial config) and edit the `docker-compose.yaml` file
 1. `vi ~/cloudflared/docker-compose.yaml`
 1. Build and start cloudflared docker container `docker compose -f ~/cloudflared/docker-compose.yaml up -d`
 1. Go to [Tunnels dashboard](https://one.dash.cloudflare.com/699b49d3fee8e9138a49442ea0119cb6/access/tunnels) and verify that tunnel is healthy.
@@ -87,7 +87,7 @@ Clone this repo to host in your home directory
 1. Build and start pihole docker container `docker compose -f ~/pihole/docker-compose.yaml up -d`
 1. Go to [pihole admin page](https://pihole.beckitrue.com/admin/index.php) and verify it's working
 1. Follow the instructions for [Installing on Ubuntu](https://github.com/pi-hole/docker-pi-hole#installing-on-ubuntu-or-fedora) on the pi-hole GitHub site. This is to make the pi-hole the DNS server running on the Raspberry Pi.
-1. Follow the [Post-Install](https://docs.pi-hole.net/main/post-install/) instructions to complete the configuration
+1. Follow the [Post-Install](https://docs.pi-hole.net/main/post-install/) instructions to complete the configuration **Make sure you have connectivity and the pi-hole is resolving DNS before making these changes, or you may not have DNS available**
 
 #### cloudflared-host
 
@@ -100,6 +100,42 @@ Clone this repo to host in your home directory
 
 1. Pull latest image: `docker pull pihole/pihole`
 1. `docker-compose up --build --remove-orphans --force-recreate -d`
+
+## Troubleshooting
+
+Running these services in Docker containers was meant to be a learning experience for me, and it was. Here are some troubleshooting steps I had to take to troubleshoot DNS, network connectivity, and re-creating containers to use configuration changes.
+
+### Assumptions
+
+* Assumes that your Cloudflare tunnel is working and you have your Application(s) configured in Cloudflare. Refer to Cloudflare documentation if your tunnel isn't working.
+* Assumes that you are using the settings in the `docker-compose.yaml` files for ports, names, etc.
+* Assumes you have configured the upstream DNS servers in Pi-hole
+
+### Networking
+
+1. Make sure you are running your services in the same network as your `cloudfared` container is running in.
+1. `cloudflared` will create a bridge network named `cloudflared`, so you might as well put your services in that network. The [Docker documentation on networking](https://docs.docker.com/config/containers/container-networking/) is very good. Check it out if this is new to you.
+1. You specify the network in the `docker-compose.yaml` file, and you can check out the details in the [Networking in Compose](https://docs.docker.com/compose/networking/) documentation. If you use the code in this repo, you'll see the network is specified in the `docker-compose.yaml` file. The containers are named, so we can use their names instead of IP addresses.
+1. You can see which networks are configured by running `docker network ls` and you should see `cloudflared` listed
+1. You can get details about the network by running `docker network inspect cloudflared`
+1. You can see details about the container network configuration by running `docker inspect <container_name>`
+
+### Connectivity
+
+1. Check connectivity from a client computer such as your laptop, and verify that you can connect to the Pi-hole web UI `http://<server-ip>:8080/admin/index.php`
+1. To check connectivity from `cloudflared` to `pi-hole` container run `docker exec -it cloudflared sh -c 'wget http://<container-ip-of-pi-hole>'` (you'll want to clean up and delete the `index.html` file when you're done).
+1. Check connectivity between containers, and / or between the container and the world by running commands from within the container. The `cloudflared` containers run `sh`, and the `nginx` and `pihole` containers use `bash`
+1. To test connectivity between `cloudflared` and `pihole` run `docker exec -it pihole bash -c 'ping -c 3 cloudflared'` *cloudflared doesn't have many troubleshooting applications installed - wget is about it*
+
+### DNS
+
+1. From the server host run `resolvectl status` to verify which DNS servers are configured. It should be the IP address of the `pi-hole` container in the `cloudflared` network, `127.0.0.1` or the IP address of the server.
+1. The `docker-compose.yaml` files are configured to use the `pi-hole` for DNS. You can verify the configuration for the containers by running `docker inspect <container_name>`. Check the DNS settings match what you expect them to be.
+1. From your client device, run `nslookup google.com <Pi-Hole Public IP Address>` and you should get a list of hosts
+
+### Rebuilding Containers
+
+ `docker-compose up --build --remove-orphans --force-recreate -d` will kill the container and force a rebuild.
 
 ## ToDo
 
