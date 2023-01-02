@@ -78,14 +78,14 @@ Clone this repo to host in your home directory
 #### nginx
 
 1. Build and start nginx docker container `docker compose -f ~/nginx/docker-compose.yaml up -d`
-1. Go to [nginx webpage](https://cameras.beckitrue.com/) and verify it's working.
+1. Go to [nginx webpage](https://cameras.beckitrue.com/) and verify it's working. (use your URL)
 
 #### pihole
 
-1. Retrieve pihole WEBADMIN password from password manager and edit the `docker-compose.yaml` file
+1. Retrieve pihole WEBADMIN password from password manager, or make a new one if this is your initial setup, and edit the `docker-compose.yaml` file
 1. `vi ~/pihole/docker-compose.yaml`
 1. Build and start pihole docker container `docker compose -f ~/pihole/docker-compose.yaml up -d`
-1. Go to [pihole admin page](https://pihole.beckitrue.com/admin/index.php) and verify it's working
+1. Go to [pihole admin page](https://pihole.beckitrue.com/admin/index.php) (use your own URL) and verify it's working
 1. Follow the instructions for [Installing on Ubuntu](https://github.com/pi-hole/docker-pi-hole#installing-on-ubuntu-or-fedora) on the pi-hole GitHub site. This is to make the pi-hole the DNS server running on the Raspberry Pi.
 1. Follow the [Post-Install](https://docs.pi-hole.net/main/post-install/) instructions to complete the configuration **Make sure you have connectivity and the pi-hole is resolving DNS before making these changes, or you may not have DNS available**
 
