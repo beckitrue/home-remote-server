@@ -84,6 +84,10 @@ Clone this repo to host in your home directory
 1. Go to [pihole admin page](https://pihole.beckitrue.com/admin/index.php) and verify it's working
 1. Follow the instructions for [Installing on Ubuntu](https://github.com/pi-hole/docker-pi-hole#installing-on-ubuntu-or-fedora) on the pi-hole GitHub site. This is to make the pi-hole the DNS server running on the Raspberry Pi.
 
+### Rebuild Containers
+
+`docker-compose up --build --remove-orphans --force-recreate -d`
+
 ## ToDo
 
 * Add nginx config for web page to cameras - dependent on getting new home network set up
