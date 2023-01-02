@@ -135,7 +135,7 @@ Running these services in Docker containers was meant to be a learning experienc
 
 ### Rebuilding Containers
 
- `docker-compose up --build --remove-orphans --force-recreate -d` will kill the container and force a rebuild.
+ `docker-compose up --build --remove-orphans --force-recreate -d` from the server command line in the conatiner-directory will kill the container and force a rebuild.
 
 ## ToDo
 
