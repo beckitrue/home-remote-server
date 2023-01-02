@@ -12,9 +12,9 @@ I had to update my edge Raspberry Pi OS to Ubuntu 20.10, and decided to add [Pi-
 
 The diagram shows the connectivity between the system compoents, both internal and external, physical and virtual.
 
-When the cloudflared container is created, it creates a bridge network named cloudflared. The nginx and pihole containters are added to cloudflared network so they can be available over the cloudflare tunnel created by the cloudflared container.
+When the cloudflared container is created, it creates a bridge network named `cloudflared`. The nginx and pihole containters are added to cloudflared network so they can be available over the Cloudflare tunnel created by the cloudflared container.
 
-The camera network will connect to the nginx container, restricting access to the camera webservers to the cloudflared tunnel. These are what Cloudflare calls [Self-host applications](https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/self-hosted-apps/) and authentication can be controlled by your IdP such as Okta or Google for example. The diagram below shows the connectivity between the system components.
+The camera network will connect to the nginx container, restricting access to the camera webservers to the cloudflared tunnel. These are what Cloudflare calls [Self-hosted applications](https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/self-hosted-apps/) and authentication can be controlled by your IdP such as Okta or Google for example. The diagram below shows the connectivity between the system components.
 
 ![Cloudflare diagram of how traffic flows between users, Cloudflare, Identity Providers, and self-hosted applications](https://developers.cloudflare.com/cloudflare-one/static/documentation/applications/network-diagram.png)
 
