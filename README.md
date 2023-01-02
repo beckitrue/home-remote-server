@@ -35,6 +35,7 @@ This repo has the code to create services for our home server running:
 * cloudflared - to create a private tunnel with a proxy managed by Cloudflare
 * nginx - a reverse proxy for the camera webpages
 * pihole - a DNS sinkhole and ad blocker
+* cloudflared-host - tunnel to the host for SSH
 
 ## How to Install
 
@@ -84,9 +85,17 @@ Clone this repo to host in your home directory
 1. Go to [pihole admin page](https://pihole.beckitrue.com/admin/index.php) and verify it's working
 1. Follow the instructions for [Installing on Ubuntu](https://github.com/pi-hole/docker-pi-hole#installing-on-ubuntu-or-fedora) on the pi-hole GitHub site. This is to make the pi-hole the DNS server running on the Raspberry Pi.
 
+#### cloudflared-host
+
+1. Retrieve cloudflared token from password manager and edit the `docker-compose.yaml` file
+1. `vi ~/cloudflared-host/docker-compose.yaml`
+1. Build and start cloudflared docker container `docker compose -f ~/cloudflared-host/docker-compose.yaml up -d`
+1. Go to [Tunnels dashboard](https://one.dash.cloudflare.com/699b49d3fee8e9138a49442ea0119cb6/access/tunnels) and verify that tunnel is healthy.
+
 ### Rebuild Containers
 
-`docker-compose up --build --remove-orphans --force-recreate -d`
+1. Pull latest image: `docker pull pihole/pihole`
+1. `docker-compose up --build --remove-orphans --force-recreate -d`
 
 ## ToDo
 
