@@ -1,0 +1,16 @@
+version: '3'
+services:
+    nginx:
+        image: nginx
+        container_name: nginx
+        hostname: nginx
+        dns:
+            - 172.18.0.3
+            - 1.1.1.1
+        networks:
+            - cloudflared
+
+networks:
+    cloudflared:
+        external: true
+        name: cloudflared

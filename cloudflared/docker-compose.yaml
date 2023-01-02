@@ -1,0 +1,16 @@
+version: '2'
+services:
+  cloudflared:
+      image: msnelling/cloudflared
+      container_name: cloudflared
+      volumes:
+          - ./config:/etc/cloudflared
+      command: /usr/local/bin/cloudflared tunnel --no-autoupdate run --token <token from pw manager>
+      dns:
+            - 172.18.0.3
+            - 1.1.1.1
+      networks:
+          - cloudflared
+networks:
+  cloudflared:
+      name: cloudflared
