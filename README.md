@@ -139,5 +139,5 @@ Running these services in Docker containers was meant to be a learning experienc
 
 ## ToDo
 
-* Add nginx config for web page to cameras - dependent on getting new home network set up
+* Add code scanning
 * Deploy with Terraform
