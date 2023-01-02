@@ -2,11 +2,11 @@
 
 ## Secure Remote Access to Home Network Services
 
-On the home server we need to have a secure connection to the web cameras. We want to limit who can access the cameras, and we don't want to run a VPN. And while we're at it, we might as well run the Pi-hole DNS blackhole on it, and point the IoT devices to use the Pi-hole.
+On the home server we need to have a secure connection to the web cameras. We want to limit who can access the cameras, and we don't want to run a VPN. And while we're at it, we might as well run the Pi-hole DNS blackhole on it, and point the IoT devices to use the Pi-hole. Finally, I'd like to have remote access to the server, so I added a 2nd Cloudflare tunnel so I can SSH to the host.
 
 Cloudflare tunnels work well, and I've used them for more than a year. Cloudflare now calls this service, [Cloudflare Zero Trust](https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/#:~:text=Cloudflare%20Docs-,Cloudflare%20Zero%20Trust,-Cloudflare%20Zero%20Trust), because hey, everyone wants zero trust now days.
 
-I had to update my edge Raspberry Pi OS to Ubuntu 20.10, and decided to add [Pi-hole](https://docs.pi-hole.net/) to it as well. And since I'm upgrading, I wanted to up my game and finally learn to use [Docker](https://docker.com). So, I had to install [cloudflared](https://hub.docker.com/r/msnelling/cloudflared), [nginx](https://hub.docker.com/_/nginx), and [pihole](https://hub.docker.com/r/pihole/pihole) containers on the Raspberry Pi 3 B from 2015. (Aren't these things amazing?)
+I had to update my edge Raspberry Pi OS to Ubuntu 20.10, and decided to add [Pi-hole](https://docs.pi-hole.net/) to it as well. And since I'm upgrading, I wanted to up my game and finally learn to use [Docker](https://docker.com). So, I had to install [cloudflared](https://hub.docker.com/r/msnelling/cloudflared), [nginx](https://hub.docker.com/_/nginx), and [pihole](https://hub.docker.com/r/pihole/pihole) containers on the Raspberry Pi 3 B from 2015. (Aren't these things amazing?). I'm using a Docker image `msnelling/cloudflared` because I'm running this on an older Pi, but if you're using a newer one, you can use the official Cloudflare image `cloudflare/cloudflared:latest`
 
 ### Network Diagram for Cloudflare Tunnels
 
@@ -45,6 +45,8 @@ This repo has the code to create services for our home server running:
 
 1. Ubuntu 20.10
 1. Docker installed and running
+1. Cloudflare account and domain
+1. [Configure your application(s)](https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/) in Cloudflare
 
 ---
 
@@ -68,6 +70,7 @@ Clone this repo to host in your home directory
 #### cloudflared
 
 1. Retrieve cloudflared token from password manager and edit the `docker-compose.yaml` file
+1. Change the image if you want to use the official Cloudflare image `cloudflare/cloudflared:latest`
 1. `vi ~/cloudflared/docker-compose.yaml`
 1. Build and start cloudflared docker container `docker compose -f ~/cloudflared/docker-compose.yaml up -d`
 1. Go to [Tunnels dashboard](https://one.dash.cloudflare.com/699b49d3fee8e9138a49442ea0119cb6/access/tunnels) and verify that tunnel is healthy.
