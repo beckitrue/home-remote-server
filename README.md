@@ -159,6 +159,6 @@ Running these services in Docker containers was meant to be a learning experienc
 
 * /etc/netplan/50-cloud-init.yaml file
 * Make use of [Docker Compose environment variables](https://docs.docker.com/compose/environment-variables/)
-* Make use of [Pi-hole environment variables](https://discourse.pi-hole.net/t/restoring-default-pi-hole-adlist-s/32323
+* Make use of [Pi-hole environment variables](https://discourse.pi-hole.net/t/restoring-default-pi-hole-adlist-s/32323)
 * Add code scanning
 * Deploy with Terraform
