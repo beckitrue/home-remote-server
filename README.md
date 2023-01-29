@@ -100,7 +100,7 @@ We're [manging the Nginx configuration and content files by mounting to a local 
 
 #### pihole
 
-1. Retrieve pihole WEBADMIN password from password manager, or make a new one if this is your initial setup, and edit the `docker-compose.yaml` file
+1. Retrieve pihole WEBADMIN password from password manager, or make a new one if this is your initial setup, and edit the `~/home-remote-server/docker-compose.yaml` file
 1. `vi ~/home-remote-server/pihole/docker-compose.yaml`
 1. Build and start pihole docker container `docker compose -f ~/home-remote-server/pihole/docker-compose.yaml up -d`
 1. Go to [pihole admin page](https://pihole.beckitrue.com/admin/index.php) (use your own URL) and verify it's working
@@ -111,7 +111,7 @@ We're [manging the Nginx configuration and content files by mounting to a local 
 #### cloudflared-host
 
 1. Retrieve cloudflared token from password manager and edit the `docker-compose.yaml` file
-1. `vi ~/cloudflared-host/docker-compose.yaml`
+1. `vi ~/home-remote-server/cloudflared-host/docker-compose.yaml`
 1. Build and start cloudflared docker container `docker compose -f ~/home-remote-server/cloudflared-host/docker-compose.yaml up -d`
 1. Go to [Tunnels dashboard](https://one.dash.cloudflare.com) and verify that tunnel is healthy.
 
