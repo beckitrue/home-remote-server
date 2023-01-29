@@ -1,12 +1,23 @@
 # README
 
+## Project Requirements and Goals
+
+* Secure, remote access to cameras
+* Secure access with IdP (Okta, Google, etc.)
+* Nginx reverse proxy to access cameras
+* Secure, remote access to host for management (I use this even when I'm on network)
+* Applications run in containers
+* Run on older Raspberry Pi (armv7l)
+* Bonus: Pi-hole
+* Learn how to run multiple containers and networks on a single host
+
 ## Secure Remote Access to Home Network Services
 
-On the home server we need to have a secure connection to the web cameras. We want to limit who can access the cameras, and we don't want to run a VPN. And while we're at it, we might as well run the Pi-hole DNS blackhole on it, and point the IoT devices to use the Pi-hole. Finally, I'd like to have remote access to the server, so I added a 2nd Cloudflare tunnel so I can SSH to the host.
+On the home server we need to have a secure connection to the web cameras. We want to limit who can access the cameras, and we don't want to run a VPN. And while we're at it, we might as well run the Pi-hole DNS blackhole on it and point the IoT devices to use the Pi-hole. Finally, I'd like to have remote access to the server, so I added a 2nd Cloudflare tunnel so I can SSH to the host.
 
 Cloudflare tunnels work well, and I've used them for more than a year. Cloudflare now calls this service, [Cloudflare Zero Trust](https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/#:~:text=Cloudflare%20Docs-,Cloudflare%20Zero%20Trust,-Cloudflare%20Zero%20Trust), because hey, everyone wants zero trust now days.
 
-I had to update my edge Raspberry Pi OS to Ubuntu 20.10, and decided to add [Pi-hole](https://docs.pi-hole.net/) to it as well. And since I'm upgrading, I wanted to up my game and finally learn to use [Docker](https://docker.com). So, I had to install [cloudflared](https://hub.docker.com/r/msnelling/cloudflared), [nginx](https://hub.docker.com/_/nginx), and [pihole](https://hub.docker.com/r/pihole/pihole) containers on the Raspberry Pi 3 B from 2015. (Aren't these things amazing?). I'm using a Docker image `msnelling/cloudflared` because I'm running this on an older Pi, but if you're using a newer one, you can use the official Cloudflare image `cloudflare/cloudflared:latest`
+I had to update my edge Raspberry Pi OS to Ubuntu 20.10, and decided to add [Pi-hole](https://docs.pi-hole.net/) to it as well. And since I'm upgrading, I wanted to up my game and finally learn to use [Docker](https://docker.com). So, I had to install [cloudflared](https://hub.docker.com/r/msnelling/cloudflared), [nginx](https://hub.docker.com/_/nginx), and [pihole](https://hub.docker.com/r/pihole/pihole) containers on the Raspberry Pi 3 B from 2015. (Aren't these things amazing?). I'm using a Docker image `msnelling/cloudflared` because I'm running this on an older Pi, but if you're using a newer one, you can use the official Cloudflare image `cloudflare/cloudflared:latest`. I should make this an environment variable in the next iteration.
 
 ### Network Diagram for Cloudflare Tunnels
 
@@ -43,10 +54,10 @@ This repo has the code to create services for our home server running:
 
 ### Prerequisites
 
-1. Ubuntu 22.10
+1. [Ubuntu 22.10](https://ubuntu.com/download/raspberry-pi)
 1. [Docker installed](https://docs.docker.com/engine/install/ubuntu/) and running
-1. docker-compose installed
-1. Cloudflare account and domain
+1. [docker-compose installed](https://docs.docker.com/compose/install/linux/)
+1. [Cloudflare account and domain](https://dash.cloudflare.com/sign-up)
 1. [Configure your application(s)](https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/) in Cloudflare
 
 ---
@@ -78,6 +89,10 @@ Clone this repo to host in your home directory
 
 #### nginx
 
+We're [manging the Nginx configuration and content files by mounting to a local directory](https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-docker/#maintaining-content-and-configuration-files-on-the-docker-host) on the Pi. Any changes in those directories will show up in the container. You'll restart your containter to pull the config and / or new content.
+
+1. `sudo mv ~/pihole/nginx/default.conf /var/nginx/conf/default.conf`
+1. `sudo mv ~/pihole/nginx/index.html /var/www/index.html`
 1. Build and start nginx docker container `docker compose -f ~/pihole/nginx/docker-compose.yaml up -d`
 1. Go to [nginx webpage](https://cameras.beckitrue.com/) and verify it's working. (use your URL)
 
@@ -89,6 +104,7 @@ Clone this repo to host in your home directory
 1. Go to [pihole admin page](https://pihole.beckitrue.com/admin/index.php) (use your own URL) and verify it's working
 1. Follow the instructions for [Installing on Ubuntu](https://github.com/pi-hole/docker-pi-hole#installing-on-ubuntu-or-fedora) on the pi-hole GitHub site. This is to make the pi-hole the DNS server running on the Raspberry Pi.
 1. Follow the [Post-Install](https://docs.pi-hole.net/main/post-install/) instructions to complete the configuration **Make sure you have connectivity and the pi-hole is resolving DNS before making these changes, or you may not have DNS available**
+1. [Enable the default blocklist](https://discourse.pi-hole.net/t/restoring-default-pi-hole-adlist-s/32323) to get started. Follow the instructions for Pi-Hole V5.
 
 #### cloudflared-host
 
@@ -142,5 +158,7 @@ Running these services in Docker containers was meant to be a learning experienc
 ## ToDo
 
 * /etc/netplan/50-cloud-init.yaml file
+* Make use of [Docker Compose environment variables](https://docs.docker.com/compose/environment-variables/)
+* Make use of [Pi-hole environment variables](https://discourse.pi-hole.net/t/restoring-default-pi-hole-adlist-s/32323
 * Add code scanning
 * Deploy with Terraform
