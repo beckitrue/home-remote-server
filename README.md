@@ -50,6 +50,8 @@ This repo has the code to create services for our home server running:
 
 ## How to Install
 
+I recommend you break this down into pieces if you're using Cloudflare Tunnels for the first time. Start with the `cloudflared-host` container that connects you to the Raspberry Pi host and see if you can SSH to it, then move on to the other components.
+
 ---
 
 ### Prerequisites
@@ -150,6 +152,13 @@ Running these services in Docker containers was meant to be a learning experienc
 1. From the server host run `resolvectl status` to verify which DNS servers are configured. It should be the IP address of the `pi-hole` container in the `cloudflared` network, `127.0.0.1` or the IP address of the server.
 1. The `docker-compose.yaml` files are configured to use the `pi-hole` for DNS. You can verify the configuration for the containers by running `docker inspect <container_name>`. Check the DNS settings match what you expect them to be.
 1. From your client device, run `nslookup google.com <Pi-Hole Public IP Address>` and you should get a list of hosts
+
+### Nginx Reverse Proxy
+
+I had a devil of a time with getting this setup until I made the config file name `default.conf`. After that, the configuration worked. But if you have trouble you can try using these documents to help:
+
+* [Managing Content and Configuration](https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-docker/#managing-content-and-configuration-files)
+* [How to setup a Docker Nginx reverse proxy server example](https://www.theserverside.com/blog/Coffee-Talk-Java-News-Stories-and-Opinions/Docker-Nginx-reverse-proxy-setup-example)
 
 ### Rebuilding Containers
 
