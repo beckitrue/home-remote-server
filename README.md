@@ -85,7 +85,7 @@ Clone this repo to host in your home directory
 
 1. Change the image if you want to use the official Cloudflare image `cloudflare/cloudflared:latest`
 1. Retrieve cloudflared token from password manager (or Cloudflare if this is your initial config) and edit the `docker-compose.yaml` file
-1. `vi ~/cloudflared/docker-compose.yaml`
+1. `vi ~/home-remote-server/cloudflared/docker-compose.yaml`
 1. Build and start cloudflared docker container `docker compose -f ~/home-remote-server/cloudflared/docker-compose.yaml up -d`
 1. Go to [Tunnels dashboard](https://one.dash.cloudflare.com) and verify that tunnel is healthy.
 
@@ -93,8 +93,8 @@ Clone this repo to host in your home directory
 
 We're [manging the Nginx configuration and content files by mounting to a local directory](https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-docker/#maintaining-content-and-configuration-files-on-the-docker-host) on the Pi. Any changes in those directories will show up in the container. You'll restart your containter to pull the config and / or new content.
 
-1. `sudo mv ~/home-remote-server/nginx/default.conf /var/nginx/conf/default.conf`
-1. `sudo mv ~/home-remote-server/nginx/index.html /var/www/index.html`
+1. `sudo mv ~/home-remote-server/nginx/default.conf /var/nginx/conf/default.conf` This is where you'll change your nginx config file(s)
+1. `sudo mv ~/home-remote-server/nginx/index.html /var/www/index.html` This is where you'll change your content file(s)
 1. Build and start nginx docker container `docker compose -f ~/home-remote-server/nginx/docker-compose.yaml up -d`
 1. Go to [nginx webpage](https://cameras.beckitrue.com/) and verify it's working. (use your URL)
 
