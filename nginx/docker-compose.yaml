@@ -14,7 +14,7 @@ services:
             # nginx config files  
             - type: bind
               source: /var/nginx/conf
-              target: /etc/nginx/conf
+              target: /etc/nginx/conf.d
               read_only: true
         dns:
             - 127.0.0.1
