@@ -77,30 +77,30 @@ See [Instructions from Docker](https://docs.docker.com/engine/install/linux-post
 ### Build and Start Docker Containers
 
 Clone this repo to host in your home directory
-`gh repo clone beckitrue/pihole`
+`gh repo clone beckitrue/home-remote-server`
 
 #### cloudflared
 
 1. Change the image if you want to use the official Cloudflare image `cloudflare/cloudflared:latest`
 1. Retrieve cloudflared token from password manager (or Cloudflare if this is your initial config) and edit the `docker-compose.yaml` file
 1. `vi ~/cloudflared/docker-compose.yaml`
-1. Build and start cloudflared docker container `docker compose -f ~/pihole/cloudflared/docker-compose.yaml up -d`
+1. Build and start cloudflared docker container `docker compose -f ~/home-remote-server/cloudflared/docker-compose.yaml up -d`
 1. Go to [Tunnels dashboard](https://one.dash.cloudflare.com) and verify that tunnel is healthy.
 
 #### nginx
 
 We're [manging the Nginx configuration and content files by mounting to a local directory](https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-docker/#maintaining-content-and-configuration-files-on-the-docker-host) on the Pi. Any changes in those directories will show up in the container. You'll restart your containter to pull the config and / or new content.
 
-1. `sudo mv ~/pihole/nginx/default.conf /var/nginx/conf/default.conf`
-1. `sudo mv ~/pihole/nginx/index.html /var/www/index.html`
-1. Build and start nginx docker container `docker compose -f ~/pihole/nginx/docker-compose.yaml up -d`
+1. `sudo mv ~/home-remote-server/nginx/default.conf /var/nginx/conf/default.conf`
+1. `sudo mv ~/home-remote-server/nginx/index.html /var/www/index.html`
+1. Build and start nginx docker container `docker compose -f ~/home-remote-server/nginx/docker-compose.yaml up -d`
 1. Go to [nginx webpage](https://cameras.beckitrue.com/) and verify it's working. (use your URL)
 
 #### pihole
 
 1. Retrieve pihole WEBADMIN password from password manager, or make a new one if this is your initial setup, and edit the `docker-compose.yaml` file
-1. `vi ~/pihole/pihole/docker-compose.yaml`
-1. Build and start pihole docker container `docker compose -f ~/pihole/pihole/docker-compose.yaml up -d`
+1. `vi ~/home-remote-server/pihole/docker-compose.yaml`
+1. Build and start pihole docker container `docker compose -f ~/home-remote-server/pihole/docker-compose.yaml up -d`
 1. Go to [pihole admin page](https://pihole.beckitrue.com/admin/index.php) (use your own URL) and verify it's working
 1. Follow the instructions for [Installing on Ubuntu](https://github.com/pi-hole/docker-pi-hole#installing-on-ubuntu-or-fedora) on the pi-hole GitHub site. This is to make the pi-hole the DNS server running on the Raspberry Pi.
 1. Follow the [Post-Install](https://docs.pi-hole.net/main/post-install/) instructions to complete the configuration **Make sure you have connectivity and the pi-hole is resolving DNS before making these changes, or you may not have DNS available**
@@ -110,13 +110,13 @@ We're [manging the Nginx configuration and content files by mounting to a local 
 
 1. Retrieve cloudflared token from password manager and edit the `docker-compose.yaml` file
 1. `vi ~/cloudflared-host/docker-compose.yaml`
-1. Build and start cloudflared docker container `docker compose -f ~/pihole/cloudflared-host/docker-compose.yaml up -d`
+1. Build and start cloudflared docker container `docker compose -f ~/home-remote-server/cloudflared-host/docker-compose.yaml up -d`
 1. Go to [Tunnels dashboard](https://one.dash.cloudflare.com) and verify that tunnel is healthy.
 
 ### Rebuild Containers
 
 1. Pull latest image: `docker pull pihole/pihole`
-1. `cd ~/pihole/pihole`
+1. `cd ~/home-remote-server/pihole`
 1. `docker-compose up --build --remove-orphans --force-recreate -d`
 
 ## Troubleshooting
