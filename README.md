@@ -10,7 +10,7 @@ I had to update my edge Raspberry Pi OS to Ubuntu 20.10, and decided to add [Pi-
 
 ### Network Diagram for Cloudflare Tunnels
 
-The diagram shows the connectivity between the system compoents, both internal and external, physical and virtual.
+The diagram shows the connectivity between the system components, both internal and external, physical and virtual.
 
 When the cloudflared container is created, it creates a bridge network named `cloudflared`. The nginx and pihole containters are added to cloudflared network so they can be available over the Cloudflare tunnel created by the cloudflared container.
 
@@ -100,6 +100,7 @@ Clone this repo to host in your home directory
 ### Rebuild Containers
 
 1. Pull latest image: `docker pull pihole/pihole`
+1. `cd ~/pihole/pihole`
 1. `docker-compose up --build --remove-orphans --force-recreate -d`
 
 ## Troubleshooting
@@ -140,5 +141,6 @@ Running these services in Docker containers was meant to be a learning experienc
 
 ## ToDo
 
+* /etc/netplan/50-cloud-init.yaml file
 * Add code scanning
 * Deploy with Terraform
