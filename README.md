@@ -144,8 +144,8 @@ Running these services in Docker containers was meant to be a learning experienc
 
 1. Check connectivity from a client computer such as your laptop, and verify that you can connect to the Pi-hole web UI `http://<server-ip>:8080/admin/index.php`
 1. To check connectivity from `cloudflared` to `pi-hole` container run `docker exec -it cloudflared sh -c 'wget http://<container-ip-of-pi-hole>'` (you'll want to clean up and delete the `index.html` file when you're done).
-1. Check connectivity between containers, and / or between the container and the world by running commands from within the container. The `cloudflared` containers run `sh`, and the `nginx` and `pihole` containers use `bash`
-1. To test connectivity between `cloudflared` and `pihole` run `docker exec -it pihole bash -c 'ping -c 3 cloudflared'` *cloudflared doesn't have many troubleshooting applications installed - wget is about it*
+1. Check connectivity between containers: `docker exec cloudflared ping pihole -c2` or use the IP address `docker exec cloudflared ping 172.18.0.4` [See more excellent networking tips here](https://maximorlov.com/4-reasons-why-your-docker-containers-cant-talk-to-each-other/#:~:text=Do%20the%20containers%20share%20a,isolation%20features%20provided%20by%20Docker.)
+1. Run commands from within the container. The `cloudflared` containers run `sh`, and the `nginx` and `pihole` containers use `bash`
 
 ### DNS
 
