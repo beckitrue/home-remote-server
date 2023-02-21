@@ -16,10 +16,6 @@ services:
               source: /var/nginx/conf
               target: /etc/nginx/conf.d
               read_only: true
-        dns:
-            - 127.0.0.1
-            - 172.18.0.4
-            - 1.1.1.1
         networks:
             - cloudflared
 

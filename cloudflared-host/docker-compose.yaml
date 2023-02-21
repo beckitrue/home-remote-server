@@ -5,8 +5,5 @@ services:
       container_name: cloudflared-host
       volumes:
           - ./config:/etc/cloudflared
-      command: /usr/local/bin/cloudflared tunnel --no-autoupdate run --token <token from pw manager>
-      dns:
-            - 127.0.0.1
-            - 1.1.1.1
+      command: /usr/local/bin/cloudflared tunnel --no-autoupdate run --token <replace with your token here>
       network_mode: "host"

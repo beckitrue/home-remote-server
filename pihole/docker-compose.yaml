@@ -9,9 +9,6 @@ services:
     volumes:
       - "./etc-pihole:/etc/pihole"
       - ./etc-dnsmasq.d:/etc/dnsmasq.d"
-    dns:
-            - 127.0.0.1
-            - 1.1.1.1
     networks:
           - cloudflared
     ports:
@@ -21,7 +18,7 @@ services:
     restart: unless-stopped
     environment:
         TZ: 'America/Chicago'
-        WEBPASSWORD: <password from pw manager>
+        WEBPASSWORD: ' We are all in the gutter'
         DNSMASQ_LISTENING: 'all'  # needed to listen on all interfaces permit all origins
         PIHOLE_DNS_: 127.0.0.1#5053;1.1.1.1;1.0.0.2
 
