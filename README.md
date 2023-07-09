@@ -131,7 +131,7 @@ We're [manging the Nginx configuration and content files by mounting to a local 
 
 1. Pull latest image: `docker pull pihole/pihole`
 1. `cd ~/home-remote-server/pihole`
-1. `op run --env-file="../.env"docker-compose up --build --remove-orphans --force-recreate -d`
+1. `op run --env-file="../.env" -- docker-compose up --build --remove-orphans --force-recreate -d`
 
 ## Troubleshooting
 
@@ -175,7 +175,7 @@ I had a devil of a time with getting this setup until I made the config file nam
 
 ### Rebuilding Containers
 
- `docker-compose up --build --remove-orphans --force-recreate -d` from the server command line in the conatiner-directory will kill the container and force a rebuild.
+ `op run --env-file="../.env" -- docker-compose up --build --remove-orphans --force-recreate -d` from the server command line in the conatiner-directory will kill the container and force a rebuild.
 
 ## ToDo
 
