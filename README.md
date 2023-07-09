@@ -31,7 +31,7 @@ The diagram shows the connectivity between the system components, both internal 
 
 When the cloudflared container is created, it creates a bridge network named `cloudflared`. The nginx and pihole containters are added to cloudflared network so they can be available over the Cloudflare tunnel created by the cloudflared container.
 
-The camera network will connect to the nginx container, restricting access to the camera webservers to the cloudflared tunnel. These are what Cloudflare calls [Self-hosted applications](https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/self-hosted-apps/) and authentication can be controlled by your IdP such as Okta or Google for example. The diagram below shows the connectivity between the system components.
+The camera network connects to the nginx container, restricting access to the camera webservers to the cloudflared tunnel. These are what Cloudflare calls [Self-hosted applications](https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/self-hosted-apps/) and authentication can be controlled by your IdP such as Okta or Google for example. The diagram below shows the connectivity between the system components.
 
 ![Cloudflare diagram of how traffic flows between users, Cloudflare, Identity Providers, and self-hosted applications](https://developers.cloudflare.com/assets/network-diagram_hu35c98d3bbf0ecf738b5b543af7009e44_79161_2296x1101_resize_q75_box_3-fe1feb83.png)
 
@@ -53,10 +53,11 @@ This repo has the code to create services for our home server running:
 * nginx - a reverse proxy for the camera webpages
 * pihole - a DNS sinkhole and ad blocker
 * cloudflared-host - tunnel to the host for SSH
+* .env file with secrets and image name for cloudflared
 
 ## How to Install
 
-I recommend you break this down into pieces if you're using Cloudflare Tunnels for the first time. Start with the `cloudflared-host` container that connects you to the Raspberry Pi host and see if you can SSH to it, then move on to the other components.
+I recommend you break this down into pieces if you're using Cloudflare Tunnels for the first time. Start with the `cloudflared-host` container that connects you to the Raspberry Pi host and see if you can SSH to it, then move on to the other components. You could also hard code your secrets to make things easier to test, and then go back and change the code to use 1Password.
 
 ---
 
