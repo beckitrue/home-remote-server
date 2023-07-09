@@ -10,6 +10,8 @@
 * Run on older Raspberry Pi (armv7l)
 * Bonus: Pi-hole
 * Learn how to run multiple containers and networks on a single host
+* Learn to use .env file to configure secrets in docker compose using 1Password CLI
+* Learn to use service account with 1Password CLI
 
 ## Secure Remote Access to Home Network Services
 
@@ -17,7 +19,7 @@ On the home server we need to have a secure connection to the web cameras. We wa
 
 Cloudflare tunnels work well, and I've used them for more than a year. Cloudflare now calls this service, [Cloudflare Zero Trust](https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/#:~:text=Cloudflare%20Docs-,Cloudflare%20Zero%20Trust,-Cloudflare%20Zero%20Trust), because hey, everyone wants zero trust now days.
 
-I had to update my edge Raspberry Pi OS to Ubuntu 22.10, and decided to add [Pi-hole](https://docs.pi-hole.net/) to it as well. And since I'm upgrading, I wanted to up my game and finally learn to use [Docker](https://docker.com). So, I had to install [cloudflared](https://hub.docker.com/r/msnelling/cloudflared), [nginx](https://hub.docker.com/_/nginx), and [pihole](https://hub.docker.com/r/pihole/pihole) containers on the Raspberry Pi 3 B from 2015. (Aren't these things amazing?). I'm using a Docker image `msnelling/cloudflared` because I'm running this on an older Pi, but if you're using a newer one, you can use the official Cloudflare image `cloudflare/cloudflared:latest`. I should make this an environment variable in the next iteration.
+I had to update my edge Raspberry Pi OS to Ubuntu 22.10, and decided to add [Pi-hole](https://docs.pi-hole.net/) to it as well. And since I'm upgrading, I wanted to up my game and finally learn to use [Docker](https://docker.com). So, I had to install [cloudflared](https://hub.docker.com/r/msnelling/cloudflared), [nginx](https://hub.docker.com/_/nginx), and [pihole](https://hub.docker.com/r/pihole/pihole) containers on the Raspberry Pi 3 B from 2015. (Aren't these things amazing?). I'm using a Docker image `msnelling/cloudflared` because I'm running this on an older Pi, but if you're using a newer one, you can use the official Cloudflare image `cloudflare/cloudflared:latest`. You can configure this as environment variable in the `.env` file.
 
 ### Network Diagram for Cloudflare Tunnels
 
@@ -27,7 +29,7 @@ When the cloudflared container is created, it creates a bridge network named `cl
 
 The camera network will connect to the nginx container, restricting access to the camera webservers to the cloudflared tunnel. These are what Cloudflare calls [Self-hosted applications](https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/self-hosted-apps/) and authentication can be controlled by your IdP such as Okta or Google for example. The diagram below shows the connectivity between the system components.
 
-![Cloudflare diagram of how traffic flows between users, Cloudflare, Identity Providers, and self-hosted applications](https://developers.cloudflare.com/cloudflare-one/static/documentation/applications/network-diagram.png)
+![Cloudflare diagram of how traffic flows between users, Cloudflare, Identity Providers, and self-hosted applications](https://developers.cloudflare.com/assets/network-diagram_hu35c98d3bbf0ecf738b5b543af7009e44_79161_2296x1101_resize_q75_box_3-fe1feb83.png)
 
 ### Diagram of Home Network
 
@@ -61,6 +63,7 @@ I recommend you break this down into pieces if you're using Cloudflare Tunnels f
 1. [docker-compose installed](https://docs.docker.com/compose/install/linux/)
 1. [Cloudflare account and domain](https://dash.cloudflare.com/sign-up)
 1. [Configure your application(s)](https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/) in Cloudflare
+1. [1Password CLI installed](https://1password.com/downloads/command-line/)
 
 ---
 
@@ -81,12 +84,25 @@ See [Instructions from Docker](https://docs.docker.com/engine/install/linux-post
 Clone this repo to host in your home directory
 `gh repo clone beckitrue/home-remote-server`
 
+#### Configure .env Values
+
+We're saving our secrets in an .env file and referencing them with 1Password. This ensures that the secrets don't get saved to GitHub. Instructions for referencing 1Password values can be found [here](https://developer.1password.com/docs/cli/get-started#usage). It's a good idea to run `op read op://<your credential>` to verify that your credential reference is correct.
+
+1. Create a 1Password [service account](https://developer.1password.com/docs/service-accounts/get-started/)
+1. Set your op service account environment variable `export OP_SERVICE_ACCOUNT_TOKEN=<token>`
+1. Save your cloudflared tokens and your PiHole web password in 1Password
+1. Change the values in the .env file to the correct values for your cloudflared tokens and PiHole password using your 1Password credential references
+1. Set the cloudflared image you want to use. The official image is `cloudflare/cloudflared:latest`. The image I'm using works on the older arm7l Pi architecture.
+
+#### cloudflared-host
+
+1. Build and start cloudflared docker container from the `home-remote-server` directory run `op run --env-file=".env" -- docker compose -f cloudflared-host/docker-compose.yaml up -d`
+1. Go to [Tunnels dashboard](https://one.dash.cloudflare.com) and verify that tunnel is healthy.
+1. SSH to the host using the Cloudflare tunnel `https://your_app.yourdomain`
+
 #### cloudflared
 
-1. Change the image if you want to use the official Cloudflare image `cloudflare/cloudflared:latest`
-1. Retrieve cloudflared token from password manager (or Cloudflare if this is your initial config) and edit the `docker-compose.yaml` file
-1. `vi ~/home-remote-server/cloudflared/docker-compose.yaml`
-1. Build and start cloudflared docker container `docker compose -f ~/home-remote-server/cloudflared/docker-compose.yaml up -d`
+1. Build and start cloudflared docker containerfrom the `home-remote-server` directory run `op run --env-file=".env" -- docker compose -f cloudflared/docker-compose.yaml up -d`
 1. Go to [Tunnels dashboard](https://one.dash.cloudflare.com) and verify that tunnel is healthy.
 
 #### nginx
@@ -100,26 +116,17 @@ We're [manging the Nginx configuration and content files by mounting to a local 
 
 #### pihole
 
-1. Retrieve pihole WEBADMIN password from password manager, or make a new one if this is your initial setup, and edit the `~/home-remote-server/docker-compose.yaml` file
-1. `vi ~/home-remote-server/pihole/docker-compose.yaml`
-1. Build and start pihole docker container `docker compose -f ~/home-remote-server/pihole/docker-compose.yaml up -d`
+1. Build and start pihole docker container from the `home-remote-server` directory run `op run --env-file=".env" -- docker compose -f pihole/docker-compose.yaml up -d`
 1. Go to [pihole admin page](https://pihole.beckitrue.com/admin/index.php) (use your own URL) and verify it's working
 1. Follow the instructions for [Installing on Ubuntu](https://github.com/pi-hole/docker-pi-hole#installing-on-ubuntu-or-fedora) on the pi-hole GitHub site. This is to make the pi-hole the DNS server running on the Raspberry Pi.
 1. Follow the [Post-Install](https://docs.pi-hole.net/main/post-install/) instructions to complete the configuration **Make sure you have connectivity and the pi-hole is resolving DNS before making these changes, or you may not have DNS available**
 1. [Enable the default blocklist](https://discourse.pi-hole.net/t/restoring-default-pi-hole-adlist-s/32323) to get started. Follow the instructions for Pi-Hole V5.
 
-#### cloudflared-host
-
-1. Retrieve cloudflared token from password manager and edit the `docker-compose.yaml` file
-1. `vi ~/home-remote-server/cloudflared-host/docker-compose.yaml`
-1. Build and start cloudflared docker container `docker compose -f ~/home-remote-server/cloudflared-host/docker-compose.yaml up -d`
-1. Go to [Tunnels dashboard](https://one.dash.cloudflare.com) and verify that tunnel is healthy.
-
 ### Rebuild Containers
 
 1. Pull latest image: `docker pull pihole/pihole`
 1. `cd ~/home-remote-server/pihole`
-1. `docker-compose up --build --remove-orphans --force-recreate -d`
+1. `op run --env-file="../.env"docker-compose up --build --remove-orphans --force-recreate -d`
 
 ## Troubleshooting
 
@@ -130,6 +137,7 @@ Running these services in Docker containers was meant to be a learning experienc
 * Assumes that your Cloudflare tunnel is working and you have your Application(s) configured in Cloudflare. Refer to Cloudflare documentation if your tunnel isn't working.
 * Assumes that you are using the settings in the `docker-compose.yaml` files for ports, names, etc.
 * Assumes you have configured the upstream DNS servers in Pi-hole
+* Assumes that you have [1Password CLI installed](https://1password.com/downloads/command-line/) on your host machine
 
 ### Networking
 
@@ -167,7 +175,7 @@ I had a devil of a time with getting this setup until I made the config file nam
 ## ToDo
 
 * /etc/netplan/50-cloud-init.yaml file
-* Make use of [Docker Compose environment variables](https://docs.docker.com/compose/environment-variables/)
+* ~~Make use of [Docker Compose environment variables](https://docs.docker.com/compose/environment-variables/)~~ DONE
 * Make use of [Pi-hole environment variables](https://discourse.pi-hole.net/t/restoring-default-pi-hole-adlist-s/32323)
 * Add code scanning
 * Deploy with Terraform
