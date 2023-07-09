@@ -1,11 +1,11 @@
-version: '2'
+version: '3.7'
 services:
   cloudflared:
-      image: msnelling/cloudflared
+      image: ${CLOUDFLARED_IMAGE}
       container_name: cloudflared
-      volumes:
-          - ./config:/etc/cloudflared
-      command: /usr/local/bin/cloudflared tunnel --no-autoupdate run --token <replace with your token here>
+      command: /usr/local/bin/cloudflared tunnel --no-autoupdate run
+      environment:
+        TUNNEL_TOKEN: ${CAMERA_TUNNEL_TOKEN}
       networks:
         - cloudflared
 networks:
