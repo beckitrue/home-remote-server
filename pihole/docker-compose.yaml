@@ -20,7 +20,10 @@ services:
         TZ: 'America/Chicago'
         WEBPASSWORD: ${PIHOLE_WEBPASSWORD}
         DNSMASQ_LISTENING: 'all'  # needed to listen on all interfaces permit all origins
-        PIHOLE_DNS_: 127.0.0.1#5053;1.1.1.1;1.0.0.2
+        PIHOLE_DNS_: 127.0.0.1#${LOCAL_PIHOLE_DNS_PORT};${DNS_1};${DNS_2}
+        DHCP_ACTIVE: 'false'
+        WEBTHEME: 'default-auto'
+        
 
 networks:
   cloudflared:

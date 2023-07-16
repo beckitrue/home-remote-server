@@ -6,6 +6,7 @@ services:
       command: /usr/local/bin/cloudflared tunnel --no-autoupdate run
       environment:
         TUNNEL_TOKEN: ${CAMERA_TUNNEL_TOKEN}
+        CLOUDFLARED_OPTS: --port ${LOCAL_PIHOLE_DNS_PORT} --upstream https://${DNS_1}/dns-query --upstream https://${DNS_2}/dns-query
       networks:
         - cloudflared
 networks:
