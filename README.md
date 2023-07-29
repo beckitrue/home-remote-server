@@ -181,6 +181,7 @@ I had a devil of a time with getting this setup until I made the config file nam
 
 * /etc/netplan/50-cloud-init.yaml file
 * ~~Make use of [Docker Compose environment variables](https://docs.docker.com/compose/environment-variables/)~~ DONE
-* Make use of [Pi-hole environment variables](https://discourse.pi-hole.net/t/restoring-default-pi-hole-adlist-s/32323)
+* ~~Make use of [Pi-hole environment variables](https://discourse.pi-hole.net/t/restoring-default-pi-hole-adlist-s/32323)~~
+* ~~Configure [DoH with cloudflared](https://docs.pi-hole.net/guides/dns/cloudflared/)~~
 * Add code scanning
 * Deploy with Terraform
