@@ -11,7 +11,7 @@
 # https://developers.cloudflare.com/1.1.1.1/infrastructure/network-operators/#available-endpoints
 
 # Use the official Alpine image for a minimal base
-FROM alpine:3.21.3
+FROM alpine:3.24.1
 
 # Download and install Cloudflared
 RUN wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -O /usr/bin/cloudflared
